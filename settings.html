@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 逸刻时光</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">逸刻时光</h1>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="/community">社区</a></li>
+                        <li><a href="/home">首页</a></li>
+                        
+                            <li><a href="/login">登录</a></li>
+                            <li><a href="/register">注册</a></li>
+                        
+                        <!-- 深色模式切换开关 -->
+                        <li class="theme-switcher">
+                            <label class="theme-toggle-switch">
+                                <input type="checkbox" id="theme-toggle">
+                                <span class="theme-toggle-slider"></span>
+                            </label>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            
+                
+                    
+                        <div class="flash-message message">
+                            Please log in to access this page.
+                        </div>
+                    
+                
+            
+            
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2 class="auth-title">用户登录</h2>
+            <form method="POST" action="">
+                <input id="csrf_token" name="csrf_token" type="hidden" value="ImIzNDc0Y2E3NTcxOTJkMmFmMmJiMjFiZjg1ODJiNjdhOTQyODY5ZDMi.aLJyjw.obiPg89jUp35LdXDhStO_JWDwJ8">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    
+                        <input class="form-input" id="username" maxlength="20" minlength="4" name="username" required type="text" value="">
+                    
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    
+                        <input class="form-input" id="password" maxlength="20" minlength="8" name="password" required type="password" value="">
+                    
+                </div>
+                <div class="form-group">
+                    <input class="btn btn-primary" id="submit" name="submit" type="submit" value="Login">
+                </div>
+            </form>
+            <div class="auth-links">
+                <p>还没有账号？ <a href="/register">立即注册</a></p>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </main>
+
+    <!-- 页脚已移除 -->
+
+    <!-- 用户认证状态 -->
+    <script>
+        // 设置用户认证状态，用于前端功能（如主题保存）
+        window.isAuthenticated = false;
+    </script>
+    
+    <script src="/static/js/script.js"></script>
+    
+    <!-- 主题切换和毛玻璃效果脚本已移至单独的script.js文件 -->
+</body>
+</html>

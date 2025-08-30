@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}社区 - 逸刻时光{% endblock %}
+
+{% block content %}
+    <div class="posts-container">
+        <h2 class="section-title">社区分享</h2>
+        <p class="community-description">欢迎浏览社区文章，您可以查看所有用户分享的内容，但只能修改或删除自己发布的文章。</p>
+        {% if posts %}
+            <div class="posts-list">
+                {% for post in posts %}
+                    <article class="post-card">
+                        <h3 class="post-title">
+                            <a href="{{ url_for('community_post', post_id=post.id) }}">{{ post.title }}</a>
+                        </h3>
+                        <div class="post-meta">
+                            <div class="author-info">
+                                <a href="{{ url_for('user_profile', user_id=post.author.id) }}">
+                                    <img src="https://huohuo90.com/images/avatar.png" alt="{{ post.author.username }}" class="author-avatar">
+                                    <span class="author-name">{{ post.author.username }}</span>
+                                </a>
+                            </div>
+                            <span class="post-date">{{ post.date_posted.strftime('%Y-%m-%d') }}</span>
+                            <span class="separator">•</span>
+                            <span class="comments-count">{{ post.comments|length }} 条评论</span>
+                        </div>
+                        <div class="post-excerpt">
+                            {{ post.content[:300] }}{% if post.content|length > 300 %}...{% endif %}
+                        </div>
+                        <a href="{{ url_for('community_post', post_id=post.id) }}" class="read-more">阅读全文</a>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-posts">
+                <p>社区中还没有文章，快来分享你的第一篇文章吧。</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

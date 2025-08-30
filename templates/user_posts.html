@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.username }}的个人主页 - 逸刻时光{% endblock %}
+
+{% block content %}
+    <div class="user-profile">
+        <!-- 用户资料头部 -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                {% if user.profile_picture and user.profile_picture != 'default.jpg' %}
+                <img src="{{ url_for('static', filename='profile_pics/' ~ user.profile_picture) }}" alt="{{ user.username }}的头像">
+                {% else %}
+                <img src="https://huohuo90.com/images/avatar.png" alt="默认头像">
+                {% endif %}
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-name">{{ user.username }}</h1>
+                <p class="profile-bio">
+                    {% if user.bio %}
+                        {{ user.bio }}
+                    {% else %}
+                        暂无简介
+                    {% endif %}
+                </p>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ posts|length }}</span>
+                        <span class="stat-label">文章</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">
+                            {% set total_comments = 0 %}
+                            {% for post in posts %}
+                                {% set total_comments = total_comments + post.comments|length %}
+                            {% endfor %}
+                            {{ total_comments }}
+                        </span>
+                        <span class="stat-label">评论</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户文章列表 -->
+        <div class="user-posts-section">
+            <h2 class="section-title">{{ user.username }}的文章</h2>
+            {% if posts %}
+                <div class="posts-list">
+                    {% for post in posts %}
+                        <article class="post-card">
+                            <h3 class="post-title">
+                                <a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
+                            </h3>
+                            <div class="post-meta">
+                                <span class="post-date">{{ post.date_posted.strftime('%Y-%m-%d') }}</span>
+                                <span class="separator">•</span>
+                                <span class="comments-count">{{ post.comments|length }} 条评论</span>
+                            </div>
+                            <div class="post-excerpt">
+                                {{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}
+                            </div>
+                            <div class="post-actions">
+                                <a href="{{ url_for('post', post_id=post.id) }}" class="read-more">阅读全文</a>
+                                {% if current_user == user %}
+                                    <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display:inline;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="btn btn-danger">删除</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-posts">
+                    <p>暂无文章</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

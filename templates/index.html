@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}逸刻时光 - 记录生活的点滴{% endblock %}
+
+{% block content %}
+    <div class="posts-container">
+        {% if current_user.is_authenticated %}
+            <div class="quick-actions">
+                <a href="{{ url_for('new_post') }}" class="btn btn-primary">写文章</a>
+            </div>
+        {% endif %}
+        {% if posts %}
+            <div class="posts-list">
+                {% for post in posts %}
+                    <article class="post-card">
+                        <h3 class="post-title">
+                            <a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
+                        </h3>
+                        <div class="post-meta">
+                            <div class="author-info">
+                                <a href="{{ url_for('user_profile', user_id=post.author.id) }}">
+                                    <img src="https://huohuo90.com/images/avatar.png" alt="{{ post.author.username }}" class="author-avatar">
+                                    <span class="author-name">{{ post.author.username }}</span>
+                                </a>
+                            </div>
+                            <span class="post-date">{{ post.date_posted.strftime('%Y-%m-%d') }}</span>
+                        </div>
+                        <div class="post-excerpt">
+                            {{ post.content[:300] }}{% if post.content|length > 300 %}...{% endif %}
+                        </div>
+                        <a href="{{ url_for('post', post_id=post.id) }}" class="read-more">阅读全文</a>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-posts">
+                <p>还没有文章，开始记录生活的点滴吧。</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}用户设置 - 逸刻时光{% endblock %}
+
+{% block content %}
+    <div class="settings-container">
+        <h2 class="section-title">用户设置</h2>
+        
+        <!-- 个人资料设置 -->
+        <div class="settings-section">
+            <h3 class="settings-section-title">个人资料</h3>
+            <form method="POST" action="{{ url_for('settings') }}" enctype="multipart/form-data">
+                {{ settings_form.hidden_tag() }}
+                
+                <!-- 头像上传 -->
+                <div class="form-group">
+                    <div class="profile-picture-upload">
+                        <label for="{{ settings_form.profile_picture.id }}" class="avatar-upload-label">
+                            <div class="current-picture">
+                                {% if current_user.profile_picture and current_user.profile_picture != 'default.jpg' %}
+                                    <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_picture) }}" alt="当前头像" class="profile-image">
+                                {% else %}
+                                    <img src="https://huohuo90.com/images/avatar.png" alt="默认头像" class="profile-image">
+                                {% endif %}
+                                <div class="avatar-upload-overlay">
+                                    <span class="upload-icon">📷</span>
+                                    <span class="upload-text">更换头像</span>
+                                </div>
+                            </div>
+                        </label>
+                        {{ settings_form.profile_picture(class="form-input avatar-upload-input") }}
+                        {% for error in settings_form.profile_picture.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    {{ settings_form.username.label(class="form-label") }}
+                    {{ settings_form.username(class="form-input") }}
+                    {% for error in settings_form.username.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                
+                <div class="form-group">
+                    {{ settings_form.bio.label(class="form-label") }}
+                    {{ settings_form.bio(class="form-textarea") }}
+                    {% for error in settings_form.bio.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                
+                <div class="form-group">
+                    {{ settings_form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+        
+        <!-- 界面设置 -->
+        <div class="settings-section">
+            <h3 class="settings-section-title">界面设置</h3>
+            <div class="interface-settings">
+                <div class="form-group">
+                    <div class="option-group">
+                        {{ settings_form.blur_effect.label(class="option-label") }}
+                        {{ settings_form.blur_effect(class="option-checkbox", id="blur-effect-toggle") }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="option-group">
+                        {{ settings_form.theme_preference.label(class="option-label") }}
+                        <div class="theme-options">
+                            {% for subfield in settings_form.theme_preference %}
+                                <div class="theme-option">
+                                    {{ subfield }}
+                                    {{ subfield.label }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 密码设置 -->
+        <div class="settings-section">
+            <h3 class="settings-section-title">修改密码</h3>
+            <form method="POST" action="{{ url_for('settings') }}">
+                {{ password_form.hidden_tag() }}
+                <div class="form-group">
+                    {{ password_form.current_password.label(class="form-label") }}
+                    {{ password_form.current_password(class="form-input") }}
+                    {% for error in password_form.current_password.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ password_form.new_password.label(class="form-label") }}
+                    {{ password_form.new_password(class="form-input") }}
+                    {% for error in password_form.new_password.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ password_form.confirm_new_password.label(class="form-label") }}
+                    {{ password_form.confirm_new_password(class="form-input") }}
+                    {% for error in password_form.confirm_new_password.errors %}
+                        <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ password_form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

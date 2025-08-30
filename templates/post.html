@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - 逸刻时光{% endblock %}
+
+{% block content %}
+    <div class="post-detail-container">
+        <article class="post-detail">
+            <h2 class="post-detail-title">{{ post.title }}</h2>
+            <div class="post-detail-meta">
+                <span class="post-detail-date">{{ post.date_posted.strftime('%Y-%m-%d') }}</span>
+            </div>
+            <div class="post-detail-content">
+                {{ post.content|replace('\n', '<br><br>')|safe }}
+            </div>
+            {% if current_user == post.author %}
+                <div class="post-detail-actions">
+                    <a href="{{ url_for('update_post', post_id=post.id) }}" class="btn btn-secondary">编辑</a>
+                    <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-danger">删除</button>
+                    </form>
+                </div>
+            {% endif %}
+        </article>
+    </div>
+{% endblock %}

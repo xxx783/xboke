@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}逸刻时光{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">逸刻时光</h1>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="{{ url_for('community') }}">社区</a></li>
+                        <li><a href="{{ url_for('home') }}">首页</a></li>
+                        {% if current_user.is_authenticated %}
+                            <li><a href="{{ url_for('new_post') }}">写文章</a></li>
+                            <li><a href="{{ url_for('user_posts', username=current_user.username) }}">我的文章</a></li>
+                            {% if current_user.username == 'admin' %}
+                            <li><a href="{{ url_for('admin') }}">管理</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('settings') }}">设置</a></li>
+                            <li><a href="{{ url_for('logout') }}">退出登录</a></li>
+                        {% else %}
+                            <li><a href="{{ url_for('login') }}">登录</a></li>
+                            <li><a href="{{ url_for('register') }}">注册</a></li>
+                        {% endif %}
+                        <!-- 深色模式切换开关 -->
+                        <li class="theme-switcher">
+                            <label class="theme-toggle-switch">
+                                <input type="checkbox" id="theme-toggle">
+                                <span class="theme-toggle-slider"></span>
+                            </label>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- 页脚已移除 -->
+
+    <!-- 用户认证状态 -->
+    <script>
+        // 设置用户认证状态，用于前端功能（如主题保存）
+        window.isAuthenticated = {{ current_user.is_authenticated|lower }};
+    </script>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    <!-- 主题切换和毛玻璃效果脚本已移至单独的script.js文件 -->
+</body>
+</html>

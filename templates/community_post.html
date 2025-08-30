@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - 社区文章 - 逸刻时光{% endblock %}
+
+{% block content %}
+    <div class="post-detail-container">
+        <article class="post-detail">
+            <h2 class="post-detail-title">{{ post.title }}</h2>
+            <div class="post-detail-meta">
+                <span class="post-detail-date">{{ post.date_posted.strftime('%Y-%m-%d') }}</span>
+                <span class="separator">•</span>
+                <span class="post-detail-author">作者: <a href="{{ url_for('user_profile', user_id=post.author.id) }}">{{ post.author.username }}</a></span>
+                <span class="separator">•</span>
+                <span class="comments-count">{{ post.comments|length }} 条评论</span>
+            </div>
+            <div class="post-detail-content">
+                {{ post.content|replace('\n', '<br><br>')|safe }}
+            </div>
+            {% if current_user == post.author %}
+                <div class="post-detail-actions">
+                    <a href="{{ url_for('update_post', post_id=post.id) }}" class="btn btn-secondary">编辑</a>
+                    <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-danger">删除</button>
+                    </form>
+                </div>
+            {% endif %}
+            <div class="back-to-community">
+                <a href="{{ url_for('community') }}" class="btn btn-primary">返回社区</a>
+            </div>
+            
+            <!-- 评论表单 -->
+            <div class="comments-section">
+                <h3>评论 ({{ post.comments|length }})</h3>
+                
+                {% if current_user.is_authenticated %}
+                <div class="comment-form">
+                    <form method="POST" action="#">
+                        {{ comment_form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ comment_form.content.label(class="form-label") }}
+                            {{ comment_form.content(class="form-textarea") }}
+                        </div>
+                        <div class="form-group">
+                            {{ comment_form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+                
+                <!-- 评论列表 -->
+                <div class="comment-list">
+                    {% for comment in post.comments %}
+                    <div class="comment-item {% if comment.pinned %}pinned{% endif %}">
+                        <div class="comment-header">
+                            <span class="comment-author"><a href="{{ url_for('user_profile', user_id=comment.author.id) }}">{{ comment.author.username }}</a></span>
+                            <span class="comment-date">{{ comment.date_posted.strftime('%Y-%m-%d %H:%M') }}</span>
+                            {% if comment.pinned %}
+                            <span class="pinned-badge">置顶</span>
+                            {% endif %}
+                        </div>
+                        <div class="comment-content">
+                            {{ comment.content }}
+                        </div>
+                        <div class="comment-actions">
+                            {% if current_user == comment.author or current_user.is_admin %}
+                            <form method="POST" action="{{ url_for('delete_comment', comment_id=comment.id) }}" style="display: inline;">
+                                {{ form.hidden_tag() }}
+                                <button type="submit" class="delete-comment-btn" onclick="return confirm('确定要删除这条评论吗？')">删除</button>
+                            </form>
+                            {% if current_user == post.author or current_user.is_admin %}
+                            <form method="POST" action="{{ url_for('pin_comment', comment_id=comment.id) }}" style="display: inline;">
+                                {{ form.hidden_tag() }}
+                                <button type="submit" class="pin-comment-btn">
+                                    {% if comment.pinned %}取消置顶{% else %}置顶{% endif %}
+                                </button>
+                            </form>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </article>
+    </div>
+{% endblock %}
